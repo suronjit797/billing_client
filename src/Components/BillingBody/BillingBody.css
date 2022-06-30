@@ -3,7 +3,7 @@
 .billing_form {
     position: fixed;
     top: 0;
-    left: -200vw;
+    right: -200vw;
     height: 100vh;
     width: 100%;
     background-color: rgba(19, 129, 255, 0.301);
@@ -14,11 +14,11 @@
     color: #fff;
     overflow-y: auto;
     backdrop-filter: blur(0);
-    transition: left .5s ease, opacity .7s ease-in-out, backdrop-filter .7s ease;
+    transition: right .5s ease, opacity .7s ease-in-out, backdrop-filter .7s ease;
 }
 
 .billing_form.active {
-    left: 0;
+    right: 0;
     opacity: 1;
     backdrop-filter: blur(15px);
 }

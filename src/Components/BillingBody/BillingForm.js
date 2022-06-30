@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 
@@ -15,11 +16,13 @@ const BillingForm = ({ openModal, setOpenModal }) => {
         event.preventDefault();
         setValidated(true);
         const form = event.currentTarget;
-
         if (form.checkValidity() === false) {
             return event.stopPropagation();
         }
-        console.log('submitted')
+        const data = { name, email, phone, amount }
+        axios.post('api/add-billing', data)
+            .then(res => console.log(res.data))
+            .catch(error => console.log(error))
     }
 
     return (
@@ -31,11 +34,11 @@ const BillingForm = ({ openModal, setOpenModal }) => {
                 validated={validated}
             >
 
-                <div 
-                className="modal_close text-danger"
-                onClick={()=>setOpenModal(false)}
+                <div
+                    className="modal_close text-danger"
+                    onClick={() => setOpenModal(false)}
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-x-circle" viewBox="0 0 16 16">
                         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                         <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
                     </svg>
@@ -60,6 +63,7 @@ const BillingForm = ({ openModal, setOpenModal }) => {
                     <Form.Control
                         type="email"
                         value={email}
+                        pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                         onChange={e => setEmail(e.target.value)}
                         placeholder="Enter email"
                         required
