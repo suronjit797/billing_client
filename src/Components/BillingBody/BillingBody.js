@@ -1,12 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
+import './BillingBody.css'
 import BillingHeader from './BillingHeader';
 import { Table } from 'react-bootstrap'
+import BillingForm from './BillingForm';
 
 const BillingBody = () => {
+
+    const [openModal, setOpenModal] = useState(true)
+
+
     return (
         <div className='my-3 container'>
-            <BillingHeader />
+            <BillingHeader openModal={openModal} setOpenModal={setOpenModal} />
 
+            <BillingForm openModal={openModal} setOpenModal={setOpenModal} />
+
+            {/* billing table */}
             <Table bordered hover className='billing_table'>
                 <thead>
                     <tr>
@@ -19,14 +28,19 @@ const BillingBody = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Billing ID</td>
-                        <td>Full Name</td>
-                        <td>Email</td>
-                        <td>Phone</td>
-                        <td>Paid Amount</td>
-                        <td>Action</td>
-                    </tr>
+                    {
+                        Array.from(Array(10).keys()).map(item => (
+                            <tr key={item}>
+                                <td>Billing ID</td>
+                                <td>Full Name</td>
+                                <td>Email</td>
+                                <td>Phone</td>
+                                <td>Paid Amount</td>
+                                <td>Action</td>
+                            </tr>
+                        ))
+                    }
+
                 </tbody>
             </Table>
         </div>

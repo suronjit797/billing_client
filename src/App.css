@@ -4,6 +4,16 @@
   --dark_color: #001a1e;
 }
 
+/* hide input type number arrow  */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
 
 /* global */
 img {
@@ -18,9 +28,11 @@ img {
   background-color: var(--dark_color);
   color: #fff;
   transition: .3s ease;
+  border: transparent;
+  outline: none;
   /* border-radius: 5px; */
 }
 
-.btn_custom-primary:hover{
-  background-color: black;
+.btn_custom-primary:hover {
+  background-color: #003c46;
 }
