@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './BillingBody.css'
 import BillingHeader from './BillingHeader';
 import { Table } from 'react-bootstrap'
@@ -6,8 +6,15 @@ import BillingForm from './BillingForm';
 
 const BillingBody = () => {
 
-    const [openModal, setOpenModal] = useState(true)
+    const [openModal, setOpenModal] = useState(false)
 
+    useEffect(()=>{
+        if(openModal){
+            document.body.style.overflowY = "hidden";
+        }else{
+            document.body.style.overflowY = "auto";
+        }
+    },[openModal])
 
     return (
         <div className='my-3 container'>

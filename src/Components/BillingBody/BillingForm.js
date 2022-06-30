@@ -4,11 +4,12 @@ import { Button, Form } from 'react-bootstrap';
 const BillingForm = ({ openModal, setOpenModal }) => {
 
     const [validated, setValidated] = useState(false);
-
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [phone, setPhone] = useState('')
     const [amount, setAmount] = useState('')
+
+
 
     const addItemHandler = event => {
         event.preventDefault();
@@ -18,9 +19,7 @@ const BillingForm = ({ openModal, setOpenModal }) => {
         if (form.checkValidity() === false) {
             return event.stopPropagation();
         }
-
         console.log('submitted')
-
     }
 
     return (
@@ -102,7 +101,7 @@ const BillingForm = ({ openModal, setOpenModal }) => {
                     </Form.Control.Feedback>
                 </Form.Group>
 
-                <Button variant="primary" type="submit">
+                <Button variant="primary" className='mt-3' type="submit">
                     Submit
                 </Button>
             </Form>
