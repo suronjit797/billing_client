@@ -85,7 +85,7 @@ const BillingBody = () => {
     }
 
     return (
-        <div className='my-3 container'>
+        <div>
             <BillingHeader openModal={openLoginModal} setOpenModal={setOpenLoginModal} />
             <BillingForm {...billingFromProps} />
             <UpdateForms {...updateFromProps} />

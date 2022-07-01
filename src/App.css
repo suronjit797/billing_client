@@ -49,3 +49,9 @@ img {
   right: 0;
   bottom: 0;
 }
+
+/* form */
+.auth_form{
+  max-width: 600px;
+  margin: auto;
+}
