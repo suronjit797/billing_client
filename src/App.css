@@ -33,12 +33,16 @@ img {
   /* border-radius: 5px; */
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .btn_custom-primary:hover {
   background-color: #003c46;
 }
 
 /* center_div */
-.center_div{
+.center_div {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -51,7 +55,24 @@ img {
 }
 
 /* form */
-.auth_form{
+.auth_form {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  min-height: 100vh;
+  background-color: #fff;
+  z-index: 9999;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+.auth_form form {
+  padding: 30px;
+  border-radius: 5px;
   max-width: 600px;
-  margin: auto;
+  margin: 0px auto;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }

@@ -1,10 +1,11 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 const Register = () => {
-
+    const navigate = useNavigate()
     const [validated, setValidated] = useState(false);
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
@@ -29,6 +30,11 @@ const Register = () => {
         axios.post('/api/registration', user)
             .then(res => {
                 if (res.data) {
+                    const { token } = res.data
+                    if (token) {
+                        localStorage.setItem("token", token)
+                        navigate('/')
+                    }
                     Swal.fire({
                         icon: 'success',
                         title: 'User Create Successfully',
@@ -119,8 +125,8 @@ const Register = () => {
                 </Form.Group>
 
                 <p className={`text-danger ${matched ? 'd-none' : ''}`}> Password dose not match </p>
-
-                <Button variant="primary" className='mt-3' type="submit">
+                <p> Already have an account? <Link to='/login'> Login Now </Link>  </p>
+                <Button variant="primary" type="submit">
                     Register a New Account
                 </Button>
             </Form>

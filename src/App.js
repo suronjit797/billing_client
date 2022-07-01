@@ -6,6 +6,7 @@ import BillingBody from './Components/BillingBody/BillingBody';
 import Header from './Components/Header/Header';
 import Register from './Components/Register/Register';
 import Login from './Components/Login/Login';
+import RequireAuth from './Components/RequireAuth/RequireAuth';
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
       <Header />
       <div className="container my-3">
         <Routes>
-          <Route path='/' element={<BillingBody />} />
+          <Route path='/' element={<RequireAuth> <BillingBody /> </RequireAuth> } />
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
         </Routes>
