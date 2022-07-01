@@ -4,11 +4,14 @@ import BillingHeader from './BillingHeader';
 import { Spinner, Table } from 'react-bootstrap'
 import BillingForm from './BillingForm';
 import axios from 'axios';
+import UpdateForms from '../UpdateForms.js/UpdateForms';
 
 const BillingBody = () => {
 
-    const [openModal, setOpenModal] = useState(false)
+    const [openLoginModal, setOpenLoginModal] = useState(false)
+    const [openUpdateModal, setOpenUpdateModal] = useState(false)
     const [bill, setBill] = useState([])
+    const [billUpdate, setBillUpdate] = useState([])
     const [skip, setSkip] = useState(0)
     const [loading, setLoading] = useState(true)
 
@@ -25,26 +28,35 @@ const BillingBody = () => {
 
     // stop scrolling on modal open
     useEffect(() => {
-        if (openModal) {
-            document.body.style.overflowY = "hidden";
+        if (openLoginModal || openUpdateModal) {
+            document.body.style.overflow = "hidden";
         } else {
             document.body.style.overflowY = "auto";
         }
-    }, [openModal])
+    }, [openLoginModal, openUpdateModal])
 
     const billingFromProps = {
-        openModal,
-        setOpenModal,
+        openModal: openLoginModal,
+        setOpenModal: setOpenLoginModal,
         bill,
         setBill,
+    }
+    const updateFromProps = {
+        openUpdateModal,
+        setOpenUpdateModal,
+        bill,
+        setBill,
+        billUpdate,
+        setBillUpdate
     }
 
 
     // handler
     const updateHandler = id => {
-        axios.put()
-            .then(res => console.log(res.data))
-            .catch(error => console.dir(error))
+        setOpenUpdateModal(true)
+        const updatedBill = bill.find(item=> item._id === id)
+        setBillUpdate(updatedBill)
+
     }
 
     const removeHandler = id => {
@@ -74,8 +86,9 @@ const BillingBody = () => {
 
     return (
         <div className='my-3 container'>
-            <BillingHeader openModal={openModal} setOpenModal={setOpenModal} />
+            <BillingHeader openModal={openLoginModal} setOpenModal={setOpenLoginModal} />
             <BillingForm {...billingFromProps} />
+            <UpdateForms {...updateFromProps} />
 
             {/* billing table */}
             <Table bordered hover className='billing_table text-center'>
@@ -99,7 +112,7 @@ const BillingBody = () => {
                                 <td> {item.phone} </td>
                                 <td> {item.amount} </td>
                                 <td className='action_data'>
-                                    <span className='me-3 text-primary' onClick={updateHandler}>
+                                    <span className='me-3 text-primary' onClick={()=> updateHandler(item._id)}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-pen" viewBox="0 0 16 16">
                                             <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z" />
                                         </svg> </span>

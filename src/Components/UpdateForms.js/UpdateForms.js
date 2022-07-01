@@ -4,15 +4,13 @@ import { Button, Form } from 'react-bootstrap';
 import Swal from 'sweetalert2'
 
 
-const BillingForm = ({ openModal, setOpenModal, bill, setBill }) => {
+const UpdateForms = ({ openUpdateModal, setOpenUpdateModal, bill, setBill, billUpdate, setBillUpdate }) => {
 
     const [validated, setValidated] = useState(false);
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [phone, setPhone] = useState('')
-    const [amount, setAmount] = useState('')
+
 
     const addItemHandler = event => {
+        const { _id, phone } = billUpdate
         event.preventDefault();
         setValidated(true);
         const form = event.currentTarget;
@@ -26,30 +24,36 @@ const BillingForm = ({ openModal, setOpenModal, bill, setBill }) => {
                 text: 'Phone Number must be 11 digit',
             })
         }
-        const data = { name, email, phone, amount }
-        setOpenModal(false)
-        setBill([...bill, data])
-        axios.post('api/add-billing', data)
+        setOpenUpdateModal(false)
+        setBill([...bill])
+        axios.put(`/api/update-billing/${_id}`, billUpdate)
             .then(res => {
                 console.log(res.data)
             })
             .catch(error => console.dir(error))
     }
 
+
+    const handlerBillUpdate = event => {
+        setBillUpdate({
+            ...billUpdate,
+            [event.target.name]: event.target.value
+
+        })
+    }
+
     return (
-        <div className={`billing_form ${openModal ? 'active' : ''}`} onClick={() => setOpenModal(false)}>
+        <div className={`billing_form ${openUpdateModal ? 'active' : ''}`} onClick={() => setOpenUpdateModal(false)}>
             <Form
                 onClick={e => e.stopPropagation()}
                 onSubmit={addItemHandler}
                 noValidate
                 validated={validated}
             >
-
-                <h1 className="text-center"> Add New Bill </h1>
-
+                <h1 className="text-center"> Update Bill </h1>
                 <div
                     className="modal_close text-danger"
-                    onClick={() => setOpenModal(false)}
+                    onClick={() => setOpenUpdateModal(false)}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-x-circle" viewBox="0 0 16 16">
                         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
@@ -62,8 +66,9 @@ const BillingForm = ({ openModal, setOpenModal, bill, setBill }) => {
                     <Form.Control
                         type="text"
                         placeholder="Please Enter Your name"
-                        value={name}
-                        onChange={e => setName(e.target.value)}
+                        value={billUpdate.name}
+                        name='name'
+                        onChange={handlerBillUpdate}
                         required
                     />
                     <Form.Control.Feedback type="invalid">
@@ -75,9 +80,10 @@ const BillingForm = ({ openModal, setOpenModal, bill, setBill }) => {
                     <Form.Label>Email address</Form.Label>
                     <Form.Control
                         type="email"
-                        value={email}
+                        value={billUpdate.email}
+                        name='email'
                         pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-                        onChange={e => setEmail(e.target.value)}
+                        onChange={handlerBillUpdate}
                         placeholder="Enter email"
                         required
                     />
@@ -90,8 +96,9 @@ const BillingForm = ({ openModal, setOpenModal, bill, setBill }) => {
                     <Form.Label>Phone Number</Form.Label>
                     <Form.Control
                         type="Number"
-                        value={phone}
-                        onChange={e => setPhone(e.target.value)}
+                        name='phone'
+                        value={billUpdate.phone}
+                        onChange={handlerBillUpdate}
                         placeholder="Please Provide Your Phone Number"
                         min={1111111111}
                         max={99999999999}
@@ -99,7 +106,7 @@ const BillingForm = ({ openModal, setOpenModal, bill, setBill }) => {
                     />
                     <Form.Control.Feedback type="invalid">
                         {
-                            !phone.length ? "Please Provide Your Phone Number." : "Phone Number Must be 11 digit"
+                            !billUpdate?.phone?.length ? "Please Provide Your Phone Number." : "Phone Number Must be 11 digit"
                         }
                     </Form.Control.Feedback>
                 </Form.Group>
@@ -108,8 +115,9 @@ const BillingForm = ({ openModal, setOpenModal, bill, setBill }) => {
                     <Form.Label>Paid Amount</Form.Label>
                     <Form.Control
                         type="text"
-                        value={amount}
-                        onChange={e => setAmount(e.target.value)}
+                        value={billUpdate.amount}
+                        name='amount'
+                        onChange={handlerBillUpdate}
                         placeholder="Please Enter Your Amount"
                         required
                     />
@@ -119,11 +127,11 @@ const BillingForm = ({ openModal, setOpenModal, bill, setBill }) => {
                 </Form.Group>
 
                 <Button variant="primary" className='mt-3' type="submit">
-                    Add New Bill
+                    Update Bill
                 </Button>
             </Form>
         </div>
     );
 };
 
-export default BillingForm;
+export default UpdateForms;
