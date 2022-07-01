@@ -5,13 +5,15 @@ import Pagination from 'react-bootstrap/Pagination';
 function BillingPagination({ skip, setSkip }) {
     const [length, setLength] = useState(0)
     const [current, setCurrent] = useState(0)
-
     const pages = Math.ceil(length / 10)
+    const token = localStorage.getItem('token')
 
     useEffect(() => {
-        axios.get('/api/db-length')
+        axios.get('/api/db-length', {
+            headers: { authorization: `Bearer ${token}` }
+        })
             .then(res => setLength(res.data.result))
-    }, [])
+    }, [token])
 
     useEffect(() => {
         setSkip(10 * current)
@@ -28,16 +30,25 @@ function BillingPagination({ skip, setSkip }) {
 
 
     return (
-        <Pagination>
-            <Pagination.Prev onClick={prevHandler} />
+        <div>
             {
-                [...Array(pages).keys()].map(num => (
-                    <Pagination.Item key={num} active={num === current} >{num + 1}</Pagination.Item>
-                ))
+                pages > 1 && <Pagination>
+                    <Pagination.Prev onClick={prevHandler} />
+                    {
+                        [...Array(pages).keys()].map(num => (
+                            <Pagination.Item 
+                            key={num} 
+                            active={num === current}
+                            onClick={()=>setCurrent(num)} 
+                            >{num + 1}</Pagination.Item>
+                        ))
+                    }
+                    <Pagination.Next onClick={nextHandler} />
+                </Pagination>
             }
-            <Pagination.Next onClick={nextHandler} />
-        </Pagination>
-    );
+        </div>
+
+    )
 }
 
 export default BillingPagination;

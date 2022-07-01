@@ -15,17 +15,19 @@ const BillingBody = () => {
     const [billUpdate, setBillUpdate] = useState([])
     const [skip, setSkip] = useState(0)
     const [loading, setLoading] = useState(true)
-
+    const token = localStorage.getItem('token')
 
     // get bill list form server
     useEffect(() => {
-        axios.get(`/api/billing-list?skip=${skip}`)
+        axios.get(`/api/billing-list?skip=${skip}`, {
+            headers: { authorization: `Bearer ${token}` }
+        })
             .then(res => {
                 setBill(res.data)
                 setLoading(false)
             })
             .catch(error => console.log(error))
-    }, [skip, openLoginModal, openUpdateModal, loading])
+    }, [skip, openLoginModal, openUpdateModal, loading, token])
 
     // stop scrolling on modal open
     useEffect(() => {
@@ -38,13 +40,14 @@ const BillingBody = () => {
 
 
     // props
-    const billingFromProps = {
+    const billingFormProps = {
         openModal: openLoginModal,
         setOpenModal: setOpenLoginModal,
         bill,
         setBill,
+        setLoading,
     }
-    const updateFromProps = {
+    const updateFormProps = {
         openUpdateModal,
         setOpenUpdateModal,
         bill,
@@ -85,10 +88,10 @@ const BillingBody = () => {
     return (
         <div>
             <Header openLoginModal={openLoginModal} openUpdateModal={openUpdateModal} />
-            <div className="container my-3">
+            <div className="container my-2">
                 <BillingHeader openModal={openLoginModal} setOpenModal={setOpenLoginModal} />
-                <BillingForm {...billingFromProps} />
-                <UpdateForms {...updateFromProps} />
+                <BillingForm {...billingFormProps} />
+                <UpdateForms {...updateFormProps} />
 
                 {/* billing table */}
                 {
@@ -138,7 +141,7 @@ const BillingBody = () => {
                     )
                 }
 
-                <BillingPagination skip={skip} setSkip={setSkip} />
+                <BillingPagination skip={skip} setSkip={setSkip}  />
             </div>
         </div>
     );

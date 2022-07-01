@@ -34,6 +34,12 @@ const Register = () => {
                     if (token) {
                         localStorage.setItem("token", token)
                         navigate('/')
+
+                        setName('')
+                        setEmail('')
+                        setPassword('')
+                        setConfirmPassword('')
+                        setMatched(false)
                     }
                     Swal.fire({
                         icon: 'success',

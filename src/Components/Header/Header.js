@@ -4,14 +4,17 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
-function Header({openLoginModal, openUpdateModal,}) {
+function Header({ openLoginModal, openUpdateModal, }) {
     const navigate = useNavigate()
     const [total, setTotal] = useState(0)
+    const token = localStorage.getItem('token')
 
     useEffect(() => {
-        axios.get('/api/total-amount')
+        axios.get('/api/total-amount', {
+            headers: { authorization: `Bearer ${token}` }
+        })
             .then(res => setTotal(res.data.totalAmount))
-    }, [openLoginModal, openUpdateModal])
+    }, [openLoginModal, openUpdateModal, token])
 
     const logOut = () => {
         localStorage.removeItem('token')

@@ -15,6 +15,7 @@
     overflow-y: auto;
     backdrop-filter: blur(0);
     transition: right .5s ease, opacity .7s ease-in-out, backdrop-filter .7s ease;
+    z-index: 10;
 }
 
 .billing_form.active {

@@ -33,6 +33,8 @@ const Login = () => {
                 if (token) {
                     localStorage.setItem("token", token)
                     navigate('/')
+                    setEmail('')
+                    setPassword('')
                 }
             })
             .catch(error => {

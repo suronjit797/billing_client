@@ -24,6 +24,7 @@ const RequireAuth = ({ children }) => {
             .catch(error => {
                 if (error) {
                     setLoading(false)
+                    localStorage.removeItem('token')
                     return <Navigate to="/login" state={{ from: location }} replace />;
                 }
             })

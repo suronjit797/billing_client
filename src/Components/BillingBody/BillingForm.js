@@ -1,16 +1,28 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import Swal from 'sweetalert2'
 
 
-const BillingForm = ({ openModal, setOpenModal, bill, setBill }) => {
+const BillingForm = ({ openModal, setOpenModal, bill, setBill, setLoading }) => {
+    const token = localStorage.getItem('token')
 
     const [validated, setValidated] = useState(false);
     const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
+    const [email, setEmail] = useState()
     const [phone, setPhone] = useState('')
     const [amount, setAmount] = useState('')
+
+    useEffect(() => {
+        axios.get('/jwt-verify', {
+            headers: { authorization: `Bearer ${token}` }
+        })
+            .then(res => {
+                setEmail(res.data.email)
+            })
+    }, [token, openModal])
+
+
 
     const addItemHandler = event => {
         event.preventDefault();
@@ -29,9 +41,25 @@ const BillingForm = ({ openModal, setOpenModal, bill, setBill }) => {
         const data = { name, email, phone, amount }
         setOpenModal(false)
         setBill([...bill, data])
-        axios.post('api/add-billing', data)
-            .then(res => {})
-            .catch(error => console.dir(error))
+        setLoading(true)
+        axios.post('api/add-billing12', data)
+            .then(res => {
+                if (res.data) {
+                    setName('')
+                    setEmail('')
+                    setPhone('')
+                    setAmount('')
+                    setLoading(false)
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: error.message,
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            })
     }
 
     return (
@@ -77,7 +105,9 @@ const BillingForm = ({ openModal, setOpenModal, bill, setBill }) => {
                         pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                         onChange={e => setEmail(e.target.value)}
                         placeholder="Enter email"
+                        readOnly
                         required
+                        disabled
                     />
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid email.
@@ -116,9 +146,7 @@ const BillingForm = ({ openModal, setOpenModal, bill, setBill }) => {
                     </Form.Control.Feedback>
                 </Form.Group>
 
-                <Button variant="primary" className='mt-3' type="submit">
-                    Add New Bill
-                </Button>
+                <Button variant="primary" className='mt-3' type="submit">Add New Bill</Button>
             </Form>
         </div>
     );
