@@ -7,6 +7,7 @@ import axios from 'axios';
 import UpdateForms from '../UpdateForms.js/UpdateForms';
 import Header from '../Header/Header'
 import BillingPagination from './BillingPagination';
+import Swal from 'sweetalert2';
 
 const BillingBody = () => {
     const [openLoginModal, setOpenLoginModal] = useState(false)
@@ -14,12 +15,13 @@ const BillingBody = () => {
     const [bill, setBill] = useState([])
     const [billUpdate, setBillUpdate] = useState([])
     const [skip, setSkip] = useState(0)
+    const [search, setSearch] = useState('')
     const [loading, setLoading] = useState(true)
     const token = localStorage.getItem('token')
 
     // get bill list form server
     useEffect(() => {
-        axios.get(`/api/billing-list?skip=${skip}`, {
+        axios.get(`/api/billing-list?skip=${skip}&search=${search}`, {
             headers: { authorization: `Bearer ${token}` }
         })
             .then(res => {
@@ -27,7 +29,7 @@ const BillingBody = () => {
                 setLoading(false)
             })
             .catch(error => console.log(error))
-    }, [skip, openLoginModal, openUpdateModal, loading, token])
+    }, [skip, openLoginModal, openUpdateModal, loading, token, search])
 
     // stop scrolling on modal open
     useEffect(() => {
@@ -63,16 +65,35 @@ const BillingBody = () => {
     }
 
     const removeHandler = id => {
-        setLoading(true)
-        axios.delete(`/api/delete-billing/${id}`)
-            .then(res => {
-                console.log(res.data)
-                setLoading(false)
-            })
-            .catch(error => {
-                console.dir(error)
-                setLoading(false)
-            })
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.delete(`/api/delete-billing/${id}`)
+                    .then(res => {
+                        if (res.data) {
+                            Swal.fire(
+                                'Deleted!',
+                                'Your file has been deleted.',
+                                'success'
+                            )
+                            setLoading(true)
+                        }
+                    })
+                    .catch(error => {
+                        console.dir(error)
+                        setLoading(true)
+                    })
+            }
+        })
+
+
     }
 
     // loading spinner
@@ -89,7 +110,12 @@ const BillingBody = () => {
         <div>
             <Header openLoginModal={openLoginModal} openUpdateModal={openUpdateModal} />
             <div className="container my-2">
-                <BillingHeader openModal={openLoginModal} setOpenModal={setOpenLoginModal} />
+                <BillingHeader
+                    openModal={openLoginModal}
+                    setOpenModal={setOpenLoginModal}
+                    setSearch={setSearch}
+                    search={search}
+                />
                 <BillingForm {...billingFormProps} />
                 <UpdateForms {...updateFormProps} />
 
@@ -111,11 +137,11 @@ const BillingBody = () => {
                                 {
                                     bill.map(item => (
                                         <tr key={item._id}>
-                                            <td>{item._id ? item._id : (<Spinner animation="border" />)}</td>
-                                            <td> {item.name} </td>
-                                            <td> {item.email} </td>
-                                            <td> {item.phone} </td>
-                                            <td> {item.amount} </td>
+                                            <td data-label='Billing ID' >{item._id ? item._id : (<Spinner animation="border" />)}</td>
+                                            <td data-label='Full Name' > {item.name} </td>
+                                            <td data-label='Email' > {item.email} </td>
+                                            <td data-label='Phone' > {item.phone} </td>
+                                            <td data-label='Paid Amount' > {item.amount} </td>
                                             <td className='action_data'>
                                                 <span className='me-3 text-primary' onClick={() => updateHandler(item._id)}>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-pen" viewBox="0 0 16 16">
@@ -141,7 +167,7 @@ const BillingBody = () => {
                     )
                 }
 
-                <BillingPagination skip={skip} setSkip={setSkip}  />
+                <BillingPagination skip={skip} setSkip={setSkip} search={search} />
             </div>
         </div>
     );

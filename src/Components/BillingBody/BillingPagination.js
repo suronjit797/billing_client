@@ -2,18 +2,18 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Pagination from 'react-bootstrap/Pagination';
 
-function BillingPagination({ skip, setSkip }) {
+function BillingPagination({ setSkip, search }) {
     const [length, setLength] = useState(0)
     const [current, setCurrent] = useState(0)
     const pages = Math.ceil(length / 10)
     const token = localStorage.getItem('token')
 
     useEffect(() => {
-        axios.get('/api/db-length', {
+        axios.get(`/api/db-length?search=${search}`, {
             headers: { authorization: `Bearer ${token}` }
         })
             .then(res => setLength(res.data.result))
-    }, [token])
+    }, [token, search])
 
     useEffect(() => {
         setSkip(10 * current)
@@ -36,10 +36,10 @@ function BillingPagination({ skip, setSkip }) {
                     <Pagination.Prev onClick={prevHandler} />
                     {
                         [...Array(pages).keys()].map(num => (
-                            <Pagination.Item 
-                            key={num} 
-                            active={num === current}
-                            onClick={()=>setCurrent(num)} 
+                            <Pagination.Item
+                                key={num}
+                                active={num === current}
+                                onClick={() => setCurrent(num)}
                             >{num + 1}</Pagination.Item>
                         ))
                     }
