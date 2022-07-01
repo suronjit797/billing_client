@@ -30,9 +30,7 @@ const BillingForm = ({ openModal, setOpenModal, bill, setBill }) => {
         setOpenModal(false)
         setBill([...bill, data])
         axios.post('api/add-billing', data)
-            .then(res => {
-                console.log(res.data)
-            })
+            .then(res => {})
             .catch(error => console.dir(error))
     }
 

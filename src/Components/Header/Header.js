@@ -1,9 +1,17 @@
 
 import Logo from '../../images/logo.png'
 import { Link, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 
-function Header() {
+function Header({openLoginModal, openUpdateModal,}) {
     const navigate = useNavigate()
+    const [total, setTotal] = useState(0)
+
+    useEffect(() => {
+        axios.get('/api/total-amount')
+            .then(res => setTotal(res.data.totalAmount))
+    }, [openLoginModal, openUpdateModal])
 
     const logOut = () => {
         localStorage.removeItem('token')
@@ -16,7 +24,7 @@ function Header() {
                     <img src={Logo} alt="logo" style={{ maxWidth: '120px' }} />
                 </Link>
                 <ul className="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center">
-                    Paid Total : 0
+                    Paid Total : {total}
 
                     <span
                         className="logOut ms-3 cursor-pointer text-danger"
