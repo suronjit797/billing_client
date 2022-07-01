@@ -40,3 +40,8 @@
     top: 10px;
     cursor: pointer;
 }
+
+/* action_data */
+.action_data span{
+    cursor: pointer;
+}

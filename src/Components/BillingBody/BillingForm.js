@@ -1,16 +1,16 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
+import Swal from 'sweetalert2'
 
-const BillingForm = ({ openModal, setOpenModal }) => {
+
+const BillingForm = ({ openModal, setOpenModal, bill, setBill }) => {
 
     const [validated, setValidated] = useState(false);
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [phone, setPhone] = useState('')
     const [amount, setAmount] = useState('')
-
-
 
     const addItemHandler = event => {
         event.preventDefault();
@@ -19,10 +19,21 @@ const BillingForm = ({ openModal, setOpenModal }) => {
         if (form.checkValidity() === false) {
             return event.stopPropagation();
         }
+        if (phone.length !== 11) {
+            return Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Phone Number must be 11 digit',
+            })
+        }
         const data = { name, email, phone, amount }
+        setOpenModal(false)
+        setBill([...bill, data])
         axios.post('api/add-billing', data)
-            .then(res => console.log(res.data))
-            .catch(error => console.log(error))
+            .then(res => {
+                console.log(res.data)
+            })
+            .catch(error => console.dir(error))
     }
 
     return (
@@ -80,7 +91,7 @@ const BillingForm = ({ openModal, setOpenModal }) => {
                         value={phone}
                         onChange={e => setPhone(e.target.value)}
                         placeholder="Please Provide Your Phone Number"
-                        min={11111111111}
+                        min={1111111111}
                         max={99999999999}
                         required
                     />
@@ -106,7 +117,7 @@ const BillingForm = ({ openModal, setOpenModal }) => {
                 </Form.Group>
 
                 <Button variant="primary" className='mt-3' type="submit">
-                    Submit
+                    Add New Bill
                 </Button>
             </Form>
         </div>
